@@ -108,9 +108,21 @@ locals {
   pim_active_assignment_rules   = merge(local.default_active_assignment_rules, local.user_active_assignment_rules)
   pim_eligible_assignment_rules = merge(local.default_eligible_assignment_rules, local.user_eligible_assignment_rules)
   pim_notification_rules = {
-    active_assignments   = try(local.user_notification_rules.active_assignments[0], local.default_notification_settings)
-    eligible_assignments = try(local.user_notification_rules.eligible_assignments[0], local.default_notification_settings)
-    eligible_activations = try(local.user_notification_rules.eligible_activations[0], local.default_notification_settings)
+    active_assignments = {
+      admin_notifications    = try(local.user_notification_rules.active_assignments[0].admin_notifications, null) != null ? local.user_notification_rules.active_assignments[0].admin_notifications : local.default_notification_settings.admin_notifications
+      approver_notifications = try(local.user_notification_rules.active_assignments[0].approver_notifications, null) != null ? local.user_notification_rules.active_assignments[0].approver_notifications : local.default_notification_settings.approver_notifications
+      assignee_notifications = try(local.user_notification_rules.active_assignments[0].assignee_notifications, null) != null ? local.user_notification_rules.active_assignments[0].assignee_notifications : local.default_notification_settings.assignee_notifications
+    }
+    eligible_assignments = {
+      admin_notifications    = try(local.user_notification_rules.eligible_assignments[0].admin_notifications, null) != null ? local.user_notification_rules.eligible_assignments[0].admin_notifications : local.default_notification_settings.admin_notifications
+      approver_notifications = try(local.user_notification_rules.eligible_assignments[0].approver_notifications, null) != null ? local.user_notification_rules.eligible_assignments[0].approver_notifications : local.default_notification_settings.approver_notifications
+      assignee_notifications = try(local.user_notification_rules.eligible_assignments[0].assignee_notifications, null) != null ? local.user_notification_rules.eligible_assignments[0].assignee_notifications : local.default_notification_settings.assignee_notifications
+    }
+    eligible_activations = {
+      admin_notifications    = try(local.user_notification_rules.eligible_activations[0].admin_notifications, null) != null ? local.user_notification_rules.eligible_activations[0].admin_notifications : local.default_notification_settings.admin_notifications
+      approver_notifications = try(local.user_notification_rules.eligible_activations[0].approver_notifications, null) != null ? local.user_notification_rules.eligible_activations[0].approver_notifications : local.default_notification_settings.approver_notifications
+      assignee_notifications = try(local.user_notification_rules.eligible_activations[0].assignee_notifications, null) != null ? local.user_notification_rules.eligible_activations[0].assignee_notifications : local.default_notification_settings.assignee_notifications
+    }
   }
   # PIM Role ID
   # Default to "member" as this module is for Group PIM.
