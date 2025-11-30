@@ -75,25 +75,13 @@ resource "azuread_user" "operator" {
   password              = random_password.eligible.result
 }
 
-resource "azuread_group" "operations_team" {
-  display_name     = "PAG Module Testing Operations Team ${random_string.group_suffix.result}"
-  mail_enabled     = false
-  mail_nickname    = "pagmodtestops${random_string.group_suffix.result}"
-  owners           = [azuread_user.approver.object_id]
-  security_enabled = true
-}
-
-resource "azuread_group_member" "operations_team_member" {
-  group_object_id  = azuread_group.operations_team.object_id
-  member_object_id = azuread_user.operator.object_id
-}
 
 module "privileged_group" {
   source = "../.."
 
   name = "pag-module-testing-${random_string.group_suffix.result}"
   eligible_members = [
-    azuread_group.operations_team.object_id,
+    azuread_user.operator.object_id,
   ]
   group_description = "Privileged access group used during PIM module testing."
   group_settings = {
