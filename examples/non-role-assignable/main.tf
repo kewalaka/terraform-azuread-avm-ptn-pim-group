@@ -61,13 +61,40 @@ resource "azuread_user" "owner" {
   password              = random_password.owner.result
 }
 
+resource "random_password" "operator" {
+  length  = 30
+  special = true
+}
+
+resource "azuread_user" "operator" {
+  display_name          = "PAG Example Operator ${random_string.group_suffix.result}"
+  user_principal_name   = "pag-example-operator${random_string.group_suffix.result}@${local.tenant_domain}"
+  account_enabled       = true
+  force_password_change = true
+  mail_nickname         = "pagexoperator${random_string.group_suffix.result}"
+  password              = random_password.operator.result
+}
+
+resource "azuread_group" "operations_team" {
+  display_name     = "PAG Example Operations Team ${random_string.group_suffix.result}"
+  mail_enabled     = false
+  mail_nickname    = "pagexops${random_string.group_suffix.result}"
+  owners           = [azuread_user.owner.object_id]
+  security_enabled = true
+}
+
+resource "azuread_group_member" "operations_team_member" {
+  group_object_id  = azuread_group.operations_team.object_id
+  member_object_id = azuread_user.operator.object_id
+}
+
 module "privileged_group" {
   source = "../.."
 
   name = "pag-non-role-assignable-${random_string.group_suffix.result}"
   # PIM onboarding happens automatically when you configure eligible members or PIM policy rules.
   # This example creates an eligible member assignment, which triggers PIM onboarding.
-  eligible_members  = [azuread_user.owner.object_id]
+  eligible_members  = [azuread_group.operations_team.object_id]
   group_description = "Standard security group (not role-assignable) with PIM eligibility."
   group_settings = {
     assignable_to_role = false

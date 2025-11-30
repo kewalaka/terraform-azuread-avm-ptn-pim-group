@@ -1,16 +1,17 @@
-# Typical Example: PIM for Groups with Nested Eligibility
+# Typical Example: PIM for Groups with Direct User Eligibility
 
-This scenario demonstrates a scalable "PIM for Groups" pattern where eligibility is managed through a nested security group rather than individual user assignments.
+This scenario demonstrates the standard "PIM for Groups" pattern where users are directly assigned eligibility to the PIM-enabled group.
 
-In this configuration, an "Operations Team" group is made eligible for the PIM-enabled group. Users added to the Operations Team automatically inherit this eligibility. When they need elevated permissions, they activate their membership in the PIM-enabled group individually. This allows you to manage who is eligible simply by managing the membership of the Operations Team group.
+In this configuration, users are made eligible for the PIM-enabled group directly. When they need elevated permissions, they activate their membership in the PIM-enabled group. This approach aligns with the Microsoft recommendation to ["Ensure that role-assignable groups don't have non-role assignable groups as members"](https://learn.microsoft.com/en-us/entra/id-governance/best-practices-secure-id-governance#preventing-lateral-movement), preventing potential lateral movement paths.
+
+This example also illustrates how to configure common PIM policy settings, such as requiring **ticket information** and **approval** from a designated approver during activation.
 
 ## What the example builds
 
 - **PIM-Enabled Group**: A role-assignable security group that holds a permanent `Contributor` role assignment on the subscription.
-- **Operations Team**: A standard security group containing the operators.
-- **Nested Eligibility**: The Operations Team is assigned as an *eligible member* of the PIM-Enabled Group.
-- **Demo Identities**: Creates a PIM approver and an operator user. The operator is a member of the Operations Team.
-- **PIM Policy**: Configured to require MFA, approval, and a 4-hour activation window.
+- **Direct Eligibility**: A user is assigned as an *eligible member* of the PIM-Enabled Group.
+- **Demo Identities**: Creates a PIM approver and an operator user.
+- **PIM Policy**: Configured to require MFA, **ticket information**, **approval**, and a 4-hour activation window.
 
 ## Permissions required
 
