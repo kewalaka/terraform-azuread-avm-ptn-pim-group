@@ -1,13 +1,3 @@
-output "assigned_roles_azapi" {
-  description = "Canonical map of permanent role assignments ready for azapi_resource consumption (name + body + scope derived)."
-  value       = local.assigned_roles_azapi
-}
-
-output "eligible_assigned_roles_azapi" {
-  description = "Canonical map of eligible role assignments ready for azapi_resource consumption."
-  value       = local.eligible_assigned_roles_azapi
-}
-
 output "group_id" {
   description = "The ID of the created Entra ID group (Microsoft Graph group id)."
   value       = azuread_group.this.object_id
